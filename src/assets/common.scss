@@ -1,0 +1,27 @@
+@charset "UTF-8";
+@import 'sass/base.scss';
+
+.content {
+    @media (min-width: $screen-am) {
+        max-width: px2rem($screen-am-mw);
+        margin: 0 auto;
+    }
+}
+.clearfix {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+.hide {
+    display: none !important;
+}
+
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}

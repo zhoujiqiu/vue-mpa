@@ -1,0 +1,17 @@
+@charset "UTF-8";
+@function px2rem($px, $base: 75) {
+    @return ($px / $base) * 1rem;
+}
+// 多行文本益处省略
+@mixin text-clamp($lines: 2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    display: -moz-box;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -webkit-line-clamp: $lines;
+}
+
+$heightLight: #39abe9;
+$linkColor: #6688af;

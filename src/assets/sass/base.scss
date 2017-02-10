@@ -1,0 +1,17 @@
+@charset "UTF-8";
+/*解决 flexible 计算宽度的问题*/
+html{
+    overflow-y: scroll;
+}
+/*
+* 解决动态设置viewPort以后，引发的Font Boosting的问题
+* https://github.com/amfe/article/issues/10
+*/
+[data-dpr="2"] p, [data-dpr="3"] p,
+[data-dpr="2"] div, [data-dpr="3"] div {
+    max-height: 100%;
+}
+@import "./reset.scss";
+
+@import "./variables.scss";
+@import "./mixins.scss";

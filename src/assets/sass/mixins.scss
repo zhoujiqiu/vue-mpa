@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+@import "functions.scss";
+// http://www.html-js.com/article/Mobile-terminal-H5-mobile-terminal-HD-multi-screen-adaptation-scheme%203041
+@mixin px2rem($name, $px) {
+    #{$name}: px2rem($px);
+}
+
+// 供字体使用
+@mixin px2px($name, $px) {
+    #{$name}: round($px / 2) * 1px;
+    [data-dpr="2"] & {
+        #{$name}: $px * 1px;
+    }
+    [data-dpr="3"] & {
+        #{$name}: round($px / 2 * 3) * 1px
+    }
+    // for 三星note4
+    [data-dpr="4"] & {
+        #{$name}: $px * 2px;
+    }
+}
+
+// 解决 Android 的 dpr 大于2的情况下，border 宽度为 2px 的情况
+@mixin fix-dpr($name) {
+    [data-real-dpr="2"] & {
+        #{$name}: 1px;
+    }
+    [data-real-dpr="3"] & {
+        #{$name}: 1px;
+    }
+    [data-real-dpr="4"] & {
+        #{$name}: 1px;
+    }
+}
+
+@mixin fix-ios-dpr($name, $unit) {
+    .device-ios[data-real-dpr="1"] & {
+        #{$name}: $unit * 1px;
+    }
+    .device-ios[data-real-dpr="2"] & {
+        #{$name}: $unit / 2 * 1px;
+    }
+    .device-ios[data-real-dpr="3"] & {
+        #{$name}: $unit / 3 * 1px;
+    }
+    .device-ios[data-real-dpr="4"] & {
+        #{$name}: $unit /4 * 1px;
+    }
+}
+
+// 多行文本益处省略
+@mixin text-clamp($lines: 2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    display: -moz-box;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -webkit-line-clamp: $lines;
+}
