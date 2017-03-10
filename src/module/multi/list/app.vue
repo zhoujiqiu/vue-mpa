@@ -18,22 +18,37 @@
     </li></ol>
     <div class="nodata-box" v-if="listStatus"> <i></i> <p>暂无数据!</p> </div>
   </div>
+
 </div>
 </template>
 <script>
 import 'assets/common.scss'
 import comJs from 'assets/common.js'
 export default {
-  ready: function () {
+  mounted: function () {
     this.getNewsList()
   },
   data () {
     return {
       newsList: '',
-      listStatus: false
+      listStatus: false,
+      isShowToast: false,
+      isShowDialog: false,
+      dialogDatas: {
+        title: '提示信息',
+        des: '这里是描述信息',
+        type: 'alert'
+      }
     }
   },
+  components: {
+  },
   methods: {
+    showToast: function () {
+    },
+    showDialog: function () {
+      this.isShowDialog = true
+    },
     goDetail: function (newsId) {
       window.location.href = '/multi/detail/index.html?newsId=' + newsId
     },
@@ -65,6 +80,12 @@ export default {
 <style lang="scss">
 @function px2rem($px, $base: 75) {
     @return ($px / $base) * 1rem;
+}
+.test{
+  padding:0 10px;
+  button{
+    margin:10px auto;
+  }
 }
 /*内容列表*/
 .news_content{width: 100%;

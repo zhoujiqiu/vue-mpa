@@ -1,26 +1,43 @@
 import Vue from 'vue'
+import App from './app'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
-import App from './app'
-import configRouter from './routers'
-import { computedate } from '../../../assets/filters'
-Vue.filter('computedate', computedate)
+import Detail from './detail'
+import List from './list'
+
 Vue.use(VueRouter)
 Vue.use(VueResource)
+
+// 全局配置
 Vue.config.debug = false
 Vue.config.devtools = false
 Vue.config.silent = true
-/* eslint-disable no-new */
 
-const router = new VueRouter()
-configRouter(router)
-router.beforeEach((transition) => {
-  document.body.scrollTop = 0
-  if (transition.to.auth) {
-    transition.next()
-  } else {
-    transition.next()
-  }
+// 并且配置路由规则
+const router = new VueRouter({
+  hashbang: false,
+  history: true,
+  saveScrollPosition: true,
+  suppressTransitionError: true,
+  routes: [
+    {
+      path: '/list',
+      component: List
+    },
+    {
+      path: '/',
+      redirect: '/list'
+    },
+    {
+      path: '/detail/:id',
+      name: 'detail',
+      component: Detail
+    }
+  ]
 })
-router.start(Vue.extend(App), '#app')
-// 这里一定要空一个行
+
+/* eslint-disable no-new */
+new Vue({
+  router,
+  render: h => h(App)
+}).$mount('#app')

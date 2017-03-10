@@ -16,10 +16,11 @@ var Rxports = {
         return res.data
       }).catch((error) => {
         console.log(error)
-        return {code: error.status,
-           message: url + '接口调用异常', // error.statusText,
-              data: ''
-           }
+        return {
+          code: error.status,
+          message: url + '接口调用异常', // error.statusText,
+          data: ''
+        }
       })
   },
   GetQueryString: (name) => {

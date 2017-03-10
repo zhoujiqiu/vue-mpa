@@ -1,17 +1,12 @@
 ---
-## vue+webpack 多页应用框架【可集成单页应用】
-  date: 2017-01-07 | author: zhoujiqiu
+## vue2+webpack 多页应用框架【可集成单页应用】
+  update: 2017-03-10 | author: zhoujiqiu
 
-## 前言
-  了解了Vue一般都会去用Vue-cli入门，这是一个构建SPA的脚手架，查看其build的项目，可以看到它是将所有的模块都输出到一个build.js中，有时候会看到这个js文件特别大，有好几兆，然而当一个项目足够复杂时，SPA恐怕不再适合使用了，用户不可能访问你的网页的时候一下子下载一个几兆的文件，特别对于手机用户，可能用户只看了网站中的一篇文章，这也会导致网页加载慢，这是不可取的。所以应该将网站划分成若干模块。于是就有了本框架（一个用于构建多页面的脚手架）
+### 更新说明
+  1、vue-mpa默认已经升级到了vue2版本；
+  2、如果想继续用vue1版本，请切换到vue1-mpa分支；
 
-## 为什么要搭建vue多页（mpa）框架
-  项目经常遇到的问题：单页应用spa打包文件太大的问题；
-  团队协助：单页开发对前端技能水平要求比较高，新手上手比较难,而且单页面在团队合作开发上比较低效；
-  业务场景需要：同一个项目多个H5应用；把多个应用做成一个单页体积会很大，而且难于维护；
-  因为各页之间相对独立，少了各种变量污染的担忧；
-
-## 使用方法
+### 使用方法
 ``` bash
 # 安装
 npm install
@@ -24,7 +19,7 @@ npm run build
 
 ```
 
-## 运行
+### 运行
 ``` bash
 # 多页demo地址
 http://localhost:8089/multi/list/index.html
@@ -37,7 +32,7 @@ http://localhost:8089/single/home/index.html
 
 ### 目录结构
 ``` bash
-xwtoon-mpa
+vue-mpa
     |---build webpack配置文件
     |---dist 生产环境打包
     |---src  开发目录
@@ -64,19 +59,12 @@ xwtoon-mpa
                         |--- app.vue
                         |--- index.html
                         |--- index.js
-                        |--- routers.js
                         |--- detail.vue
                         |--- list.vue
 
 
 ```
 
-从目录结构上，各种组件、页面模块、公共资源等都按类新建了文件夹，方便我们储存文件。
-我们所有的文件，最主要都是放在`module`文件夹里；
-在`module`里下级文件夹，一个文件夹就是一个html，`js``vue template` 都统一放在当前文件夹里，当然你也可以继续放其他的资源，例如css、图片等，webpack会打包到当前页面里。
-如果项目不需要这个页面了，可以直接把这个文件夹直接删除掉，干净项目，干活也开心。
-像以前我们传统开发项目，所有的图片都习惯放在`images`里，当项目有改动时，有些图片等资源用不上了，但还占着坑位，虽然现在的硬件容量大到惊人，但我们应该还是要养到一个良好的习惯。
-当前页面的开发在`app.vue`里，打开后你就会看到很熟悉的`<template>`、`<script>`、`<style scoped>`了。
 `注意：`请保持module下的各模块的目录结构一致；
 
 
@@ -109,52 +97,3 @@ glob.sync(globPath).forEach(function (entry) {
   entries[pathname] = entry;
 });
 ```
-
-3、配置静态资源输出
-将静态资源输出到static文件夹
-``` bash
-# css
-{
-  test: /\.scss$/,
-  loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader')
-},
-# 图片
-{
-  test: /\.(png|jpe?g|gif)(\?.*)?$/,
-  loader: 'url',
-  query: {
-    limit: 8192,
-    name: 'static/images/[name].[hash:7].[ext]'
-  }
-},
-# 图标字体
-{
-  test: /\.((ttf|eot|woff|svg)(\?t=[0-9]\.[0-9]\.[0-9]))|(ttf|eot|woff|svg)\??.*$/,
-  loader: 'url-loader?name=static/font/[name].[ext]'
-}
-```
-
-
-### 集成单页（spa）应用架构
-由于该mpa架构页面跳转会刷新页面，导致在某些业务场景下，数据传递和vue组件之间的通信会很不方便，所以在框架中集成了单页面应用架构；
-``` bash
-# 单页面应用结构
-  |--- home  某个应用模块
-      |--- index.html  入口html
-      |--- index.js    入口js,import vue-router
-      |--- app.vue     router-view 路由容器
-      |--- routers.js  路由配置，通过resolve参数实现异步加载；每个路由会生成自己业务的js
-      |--- detail.vue     路由1:详情模块
-      |--- list.vue    路由2:列表模块
-
-```
-``` bash
-# 单页面路由打包，将不是入口文件的vue-router单独打包；统一放在static/chunks目录
-output: {
-    path: config.build.assetsRoot,
-    publicPath: config.build.assetsPublicPath,
-    filename: '[name].js',
-    chunkFilename: 'static/chunks/[name].js?[chunkhash]'
-}
-```
-

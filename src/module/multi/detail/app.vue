@@ -8,7 +8,7 @@
     <img :src="newsDetail.newsUrl+'?imageView2/2/w/750/h/360'">
     </div>
     <!-- 文本 -->
-    <div class="nd_text">{{{newsDetail.newsContent}}}</div>
+    <div class="nd_text" v-html='newsDetail.newsContent'></div>
   </div>
 </div>
 </template>
@@ -16,7 +16,7 @@
 import 'assets/common.scss'
 import comJs from 'assets/common.js'
 export default {
-  ready: function () {
+  mounted: function () {
     this.getNewsList()
   },
   data () {

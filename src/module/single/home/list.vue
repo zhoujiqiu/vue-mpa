@@ -1,7 +1,8 @@
 <template>
 <div class="content">
   <div class="news_content"><ol v-if="newsList.length>0"> 
-    <li class="aaa" v-for="list in newsList" @click="goDetail(list.newsId)">
+    <li class="aaa" v-for="list in newsList">
+      <router-link :to="{name:'detail',params:{id:list.newsId}}">
       <div class="clearfix"> 
         <div class="fl news_pic" v-if="list.newsUrl">  
           <img :src="list.newsUrl+'?imageView2/1/w/190/h/144'"> 
@@ -15,28 +16,43 @@
           </div>
         </div>
       </div>
+      </router-link>
     </li></ol>
     <div class="nodata-box" v-if="listStatus"> <i></i> <p>暂无数据!</p> </div>
   </div>
+
 </div>
 </template>
 <script>
 import 'assets/common.scss'
 import comJs from 'assets/common.js'
 export default {
-  ready: function () {
+  created: function () {
     this.getNewsList()
   },
   data () {
     return {
       newsList: '',
-      listStatus: false
+      listStatus: false,
+      isShowToast: false,
+      isShowDialog: false,
+      dialogDatas: {
+        title: '提示信息',
+        des: '这里是描述信息',
+        type: 'alert'
+      }
     }
   },
+  components: {
+  },
   methods: {
+    showToast: function () {
+    },
+    showDialog: function () {
+      this.isShowDialog = true
+    },
     goDetail: function (newsId) {
-      this.$router.go({name: 'detail', params: {id: newsId}})
-      // window.location.href = '/news/detail/index.html?newsId=' + newsId
+      window.location.href = '/single/detail/index.html?newsId=' + newsId
     },
     getNewsList: function () {
       let self = this
@@ -66,6 +82,12 @@ export default {
 <style lang="scss">
 @function px2rem($px, $base: 75) {
     @return ($px / $base) * 1rem;
+}
+.test{
+  padding:0 10px;
+  button{
+    margin:10px auto;
+  }
 }
 /*内容列表*/
 .news_content{width: 100%;

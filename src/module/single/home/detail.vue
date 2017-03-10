@@ -8,7 +8,7 @@
     <img :src="newsDetail.newsUrl+'?imageView2/2/w/750/h/360'">
     </div>
     <!-- 文本 -->
-    <div class="nd_text">{{{newsDetail.newsContent}}}</div>
+    <div class="nd_text" v-html='newsDetail.newsContent'></div>
   </div>
 </div>
 </template>
@@ -16,8 +16,9 @@
 import 'assets/common.scss'
 import comJs from 'assets/common.js'
 export default {
-  ready: function () {
-    this.getNewsList()
+  activated: function () {
+    let id = this.$route.params.id
+    this.getNewsList(id)
   },
   data () {
     return {
@@ -25,12 +26,12 @@ export default {
     }
   },
   methods: {
-    getNewsList: function () {
+    getNewsList: function (id) {
       let self = this
       self.newsDetail = []
       let body = ''
       let param = {
-        news_id: self.$route.params.id
+        news_id: id
       }
       comJs._post('/news/findNewsById', body, param).then((response) => {
         comJs.setTitle(response.newsTitle)
