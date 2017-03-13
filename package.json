@@ -76,7 +76,7 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "vue": "^2.2.1",
-    "vue-hot-reload-api": "^2.0.11",
+    "vue-hot-reload-api": "^1.2.0",
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^11.1.4",
     "vue-resource": "^1.2.1",
