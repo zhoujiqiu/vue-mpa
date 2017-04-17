@@ -1,12 +1,11 @@
 import Vue from 'vue'
 import App from './app'
+import axios from 'axios'
 import VueRouter from 'vue-router'
-import VueResource from 'vue-resource'
-import Detail from './detail'
-import List from './list'
+import Routers from './routers'
 
 Vue.use(VueRouter)
-Vue.use(VueResource)
+Vue.prototype.$http = axios
 
 // 全局配置
 Vue.config.debug = false
@@ -15,25 +14,8 @@ Vue.config.silent = true
 
 // 并且配置路由规则
 const router = new VueRouter({
-  hashbang: false,
-  history: true,
-  saveScrollPosition: true,
-  suppressTransitionError: true,
-  routes: [
-    {
-      path: '/list',
-      component: List
-    },
-    {
-      path: '/',
-      redirect: '/list'
-    },
-    {
-      path: '/detail/:id',
-      name: 'detail',
-      component: Detail
-    }
-  ]
+  mode: 'hash',
+  routes: Routers
 })
 
 /* eslint-disable no-new */

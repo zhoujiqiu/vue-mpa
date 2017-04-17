@@ -1,160 +1,177 @@
 <template>
-<div class="content">
-  <div class="news_content"><ol v-if="newsList.length>0"> 
-    <li class="aaa" v-for="list in newsList" @click="goDetail(list.newsId)">
-      <div class="clearfix"> 
-        <div class="fl news_pic" v-if="list.newsUrl">  
-          <img :src="list.newsUrl+'?imageView2/1/w/190/h/144'"> 
-        </div>
-        <div :class="list.newsUrl ? 'news_text' : 'news_text_long'"> 
-          <div class="news_text_t">{{list.newsTitle}}</div>
-          <span>{{list.newsPublishTime | computedate}}</span>
-          <div class="news_text_fr">
-            <span>{{list.newsBrowsNum}}&nbsp;浏览</span>
-            <strong class="zd" v-if="list.newsIsTop == 'Y'">置顶</strong>
-          </div>
-        </div>
-      </div>
-    </li></ol>
-    <div class="nodata-box" v-if="listStatus"> <i></i> <p>暂无数据!</p> </div>
-  </div>
+  <div class="content">
+    <!-- 全局header -->
+    <nv-head :page-type="getTitleStr(searchKey.tab)"
+      ref="head"
+      :fix-head="true"
+      :need-add="true"
+      :ref="multi">
+    </nv-head>
 
-</div>
+    <section id="page">
+      <!-- 首页列表 -->
+      <ul class="posts-list">
+          <li v-for="item in topics" :key="item.id">
+              <a @click="goDetail(item.id)">
+              <h3 v-text="item.title"
+                      :class="getTabInfo(item.tab, item.good, item.top, true)"
+                      :title="getTabInfo(item.tab, item.good, item.top, false)">
+              </h3>
+              <div class="content">
+                  <img class="avatar" :src="item.author.avatar_url" />
+                  <div class="info">
+                      <p>
+                          <span class="name">
+                              {{item.author.loginname}}
+                          </span>
+                          <span class="status" v-if="item.reply_count > 0">
+                              <b>{{item.reply_count}}</b>
+                              /{{item.visit_count}}
+                          </span>
+                      </p>
+                      <p>
+                          <time>{{item.create_at | getLastTimeStr}}</time>
+                          <time>{{item.last_reply_at | getLastTimeStr}}</time>
+                      </p>
+                  </div>
+              </div>
+              </a>
+          </li>
+      </ul>
+    </section>
+    <infinite-loading :on-infinite="onInfinite" ref="infiniteLoading">
+      <span slot="no-more">
+        没有更多数据 :(
+      </span>
+    </infinite-loading>
+  </div>
 </template>
 <script>
 import 'assets/common.scss'
-import comJs from 'assets/common.js'
+import $ from 'n-zepto'
+import utils from 'assets/common.js'
+import nvHead from 'components/header'
+import InfiniteLoading from 'toon-ui/lib/components/scroller'
 export default {
   mounted: function () {
-    this.getNewsList()
+    this.searchKey.tab = utils.getQueryString('tab') || 'all'
+    if (window.window.sessionStorage.searchKey && window.window.sessionStorage.tab === this.searchKey.tab) {
+        this.isFirst = false
+        this.topics = JSON.parse(window.window.sessionStorage.topics)
+        this.searchKey = JSON.parse(window.window.sessionStorage.searchKey)
+        this.$nextTick(() => $(window).scrollTop(window.window.sessionStorage.scrollTop))
+    } else {
+      this.getTopicsList()
+    }
   },
   data () {
     return {
-      newsList: '',
-      listStatus: false,
-      isShowToast: false,
-      isShowDialog: false,
-      dialogDatas: {
-        title: '提示信息',
-        des: '这里是描述信息',
-        type: 'alert'
-      }
+      topics: [],
+      searchKey: {
+        page: 1,
+        limit: 20,
+        tab: 'all',
+        mdrender: true
+      },
+      isFirst: true
     }
   },
   components: {
+    nvHead,
+    InfiniteLoading
+  },
+  filters: {
+    getLastTimeStr: function (time) {
+      return utils.getLastTimeStr(time)
+    }
   },
   methods: {
-    showToast: function () {
-    },
-    showDialog: function () {
-      this.isShowDialog = true
-    },
-    goDetail: function (newsId) {
-      window.location.href = '/multi/detail/index.html?newsId=' + newsId
-    },
-    getNewsList: function () {
-      let self = this
-      self.newsList = []
-      let body = ''
-      let param = {
-        pageNum: 1,
-        pageSize: 50,
-        nc_id: 2
+    getTitleStr: function (tab) {
+      let str = ''
+      switch (tab) {
+        case 'share':
+          str = '分享'
+          break
+        case 'ask':
+          str = '问答'
+          break
+        case 'job':
+          str = '招聘'
+          break
+        case 'good':
+          str = '精华'
+          break
+        default:
+          str = '全部'
       }
-      comJs._post('/news/findListNews', body, param).then((response) => {
-        if (response.code === '0') {
-          self.newsList = response.data
-          if (response.data.length > 0) {
-            this.listStatus = false
-          } else {
-            this.listStatus = true
+      return str
+    },
+    getTabInfo: function (tab, good, top, isClass) {
+      let str = ''
+      let className = ''
+      if (top) {
+          str = '置顶'
+          className = 'top'
+      } else if (good) {
+          str = '精华'
+          className = 'good'
+      } else {
+          switch (tab) {
+              case 'share':
+                  str = '分享'
+                  className = 'share'
+                  break
+              case 'ask':
+                  str = '问答'
+                  className = 'ask'
+                  break
+              case 'job':
+                  str = '招聘'
+                  className = 'job'
+                  break
+              default:
+                  str = '暂无'
+                  className = 'default'
+                  break
           }
-        }
-      }).catch((err) => {
+      }
+      return isClass ? className : str
+    },
+    getTopicsList: function () {
+      let _self = this
+      _self.$http.get('http://cnodejs.org/api/v1/topics', {
+        params: _self.searchKey
+      })
+      .then(function (res) {
+        _self.topics = _self.topics.concat(res.data.data)
+        _self.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
+        _self.isFirst = false
+      })
+      .catch(function (err) {
         console.log(err)
       })
+    },
+    onInfinite () {
+      console.log(this.searchKey.page)
+      if (!this.isFirst) {
+        this.searchKey.page += 1
+        this.getTopicsList()
+      }
+    },
+    goDetail: function (id) {
+      // 当前滚动条位置
+      window.window.sessionStorage.scrollTop = $(window).scrollTop()
+      // 当前页面主题数据
+      window.window.sessionStorage.topics = JSON.stringify(this.topics)
+      // 查询参数
+      window.window.sessionStorage.searchKey = JSON.stringify(this.searchKey)
+      // 当前tab
+      window.window.sessionStorage.tab = utils.getQueryString('tab') || 'all'
+      window.location.href = '../detail/index.html?id=' + id
     }
   }
 }
 </script>
 <style lang="scss">
-@function px2rem($px, $base: 75) {
-    @return ($px / $base) * 1rem;
-}
-.test{
-  padding:0 10px;
-  button{
-    margin:10px auto;
-  }
-}
-/*内容列表*/
-.news_content{width: 100%;
-    ol{
-        background:#fff;
-        position:relative;
-        &:after{
-            content: '';
-            position:absolute;
-            left:0;
-            bottom:0;
-            width:100%;
-            height:1px;
-            background-image: linear-gradient(0deg, #dddee3 50%, transparent 50%);
-        }
-    }
-    
-}
-.news_content li{padding:px2rem(26) 0;position:relative;margin-left:px2rem(30);
-    &:after{
-        content: '';
-        position:absolute;
-        left:0;
-        bottom:0;
-        width:100%;
-        height:1px;
-        background-image: linear-gradient(0deg, #e8e8e8 50%, transparent 50%);
-    }
-    &:last-child{
-        .news_text:after{
-            display:none;
-        }
-    }
-}
-.news_pic{width:px2rem(190);height:px2rem(144);margin-right:px2rem(20); overflow:hidden;}
-.news_pic img{width: px2rem(190);height:px2rem(144);}
-.news_text{width:px2rem(510);float:right;position:relative;padding-right:px2rem(30);
-    
-}
-.news_text_long{
-    float:none;
-    width:px2rem(710);
-}
-.news_text p{width: 96%;word-wrap: break-word;font-size:px2rem(32);color: #333333;margin-bottom:px2rem(32);}
-.news_text span{float: left;font-size:px2rem(24);color: #8E8E93;}
-.news_text span:nth-of-type(1){margin-right:px2rem(200); margin-top:px2rem(2)}
-.news_text img{float: left;width:px2rem(24);height:px2rem(16);margin-top:px2rem(8);margin-right:px2rem(8);}
-.news_text strong{float: right;text-align: center;width:px2rem(60);height:px2rem(28);line-height:px2rem(28);font-size:px2rem(18);}
-.news_text .zd{color: #39ABE9;border: 1px solid #39ABE9;border-radius:px2rem(6); font-size:px2rem(20); font-weight:100; height:auto; 
-    padding-top:px2rem(4); padding-bottom:px2rem(2); line-height:px2rem(22); margin:px2rem(0) 0 0 px2rem(18);}
-.news_text .rm{color: #FF5A5F;border: 1px solid #FF5A5F;border-radius:px2rem(2);}
-.no_pic .news_text{width: 100%;}
-.no_pic .news_text span:nth-of-type(1){margin-right:px2rem(406);}
-
-.news_text_fr{float:right; line-height:px2rem(30)}
-.news_text span:nth-of-type(1){margin-right:0;}
-.news_text_t{
-  max-height:px2rem(86);
-  line-height: px2rem(44);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    display: -moz-box;
-    -webkit-box-orient: vertical;
-    -moz-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    font-size:px2rem(32)!important;
-    margin-bottom:px2rem(28);
-    word-wrap: break-word;
-    word-break: break-all;
-}
+@import './topic.scss';
 </style>

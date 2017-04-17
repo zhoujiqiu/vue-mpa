@@ -7,7 +7,7 @@ var glob = require('glob');
 var entries = getEntry('./src/module/**/**/*.js'); // 获得入口js文件
 
 // 配置（提取）项目公共的JS，并打包到指定的目录；
-entries['static/common/vendors'] = ['vue','vue-resource','n-zepto','./src/assets/common.js'];
+entries['static/common/vendors'] = ['vue','axios','n-zepto','./src/assets/common.js'];
 var chunks = Object.keys(entries);
 
 // 将样式提取到单独的css文件中，而不是打包到js文件或使用style标签插入在head标签中

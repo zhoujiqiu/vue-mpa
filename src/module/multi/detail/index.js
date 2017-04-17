@@ -1,7 +1,8 @@
 import Vue from 'vue'
+import axios from 'axios'
 import App from './app'
-import VueResource from 'vue-resource'
-Vue.use(VueResource)
+Vue.prototype.$http = axios
+
 // 全局配置
 Vue.config.debug = false
 Vue.config.devtools = false

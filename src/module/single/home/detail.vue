@@ -1,85 +1,147 @@
 <template>
-<div class="content">
-  <div class="news_detail">
-    <h1 class="nd_title">{{newsDetail.newsTitle}}</h1>
-    <div class="clo news_details_tit_text"><span class="fl">{{newsDetail.newsAuthor}}&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="fr">{{newsDetail.newsBrowsNum}}浏览&nbsp;&nbsp;&nbsp;&nbsp;{{newsDetail.newsPublishTime | computedate}}</span></div>
-    <!-- 图片 -->
-    <div class="nd_pic hide" v-if="newsDetail.newsUrl">
-    <img :src="newsDetail.newsUrl+'?imageView2/2/w/750/h/360'">
+    <div>
+        <nv-head page-type="主题"
+                :show-menu="showMenu"
+                :need-add="true"
+                :fix-head="true">
+        </nv-head>
+
+        <div id="page"
+                :class="{'show-menu':showMenu}"
+                v-if="topic.title">
+
+            <h2 class="topic-title" v-text="topic.title"></h2>
+            <section class="author-info">
+                <img class="avatar" :src="topic.author.avatar_url" />
+                <div class="col">
+                    <span>{{topic.author.loginname}}</span>
+                    <time>
+                        发布于:{{topic.create_at | getLastTimeStr(true)}}
+                    </time>
+                </div>
+                <div class="right">
+                    <span class="tag"
+                            :class="getTabInfo(topic.tab, topic.good, topic.top, true)"
+                            v-text="getTabInfo(topic.tab, topic.good, topic.top, false)">
+                    </span>
+                    <span class="name">{{topic.visit_count}}次浏览</span>
+                </div>
+            </section>
+
+            <section class='markdown-body topic-content' v-html="topic.content">
+
+            </section>
+
+            <h3 class="topic-reply">
+                <strong>{{topic.reply_count}}</strong> 回复
+            </h3>
+
+            <section class="reply-list">
+                <ul>
+                    <li v-for="item in topic.replies">
+                        <section class="user">
+                            <img class="head" :src="item.author.avatar_url"/>
+                            <div class="info">
+                                <span class="cl">
+                                    <span class="name" v-text="item.author.loginname"></span>
+                                    <span class="name mt10">
+                                        <span></span>
+                                        发布于:{{item.create_at | getLastTimeStr(true)}}</span>
+                                </span>
+                            </div>
+                        </section>
+                        <div class="reply_content" v-html="item.content"></div>
+                    </li>
+                </ul>
+            </section>
+        </div>
+
+        <div class='no-data' v-if="noData">
+            <i class="iconfont icon-empty">&#xe60a;</i>
+            该话题不存在!
+        </div>
     </div>
-    <!-- 文本 -->
-    <div class="nd_text" v-html='newsDetail.newsContent'></div>
-  </div>
-</div>
 </template>
 <script>
-import 'assets/common.scss'
-import comJs from 'assets/common.js'
-export default {
-  activated: function () {
-    let id = this.$route.params.id
-    this.getNewsList(id)
-  },
-  data () {
-    return {
-      newsDetail: ''
+    import utils from 'assets/common.js'
+    import nvHead from 'components/header.vue'
+
+    export default {
+        data () {
+            return {
+                showMenu: false, // 是否展开左侧菜单
+                topic: {}, // 主题
+                noData: false,
+                topicId: ''
+            }
+        },
+        filters: {
+          getLastTimeStr: function (time) {
+            return utils.getLastTimeStr(time)
+          }
+        },
+        mounted () {
+            let _self = this
+            // 隐藏左侧展开菜单
+            _self.showMenu = false
+
+            // 获取url传的tab参数
+            _self.topicId = _self.$route.params.id
+
+            // 加载主题数据
+            _self.$http.get('https://cnodejs.org/api/v1/topic/' + _self.topicId)
+            .then(function (res) {
+              _self.topic = res.data.data
+            })
+            .catch(function (err) {
+              console.log(err)
+              _self.noData = true
+            })
+        },
+        methods: {
+            getTabInfo: function (tab, good, top, isClass) {
+              let str = ''
+              let className = ''
+              if (top) {
+                  str = '置顶'
+                  className = 'top'
+              } else if (good) {
+                  str = '精华'
+                  className = 'good'
+              } else {
+                  switch (tab) {
+                      case 'share':
+                          str = '分享'
+                          className = 'share'
+                          break
+                      case 'ask':
+                          str = '问答'
+                          className = 'ask'
+                          break
+                      case 'job':
+                          str = '招聘'
+                          className = 'job'
+                          break
+                      default:
+                          str = '暂无'
+                          className = 'default'
+                          break
+                  }
+              }
+              return isClass ? className : str
+            },
+            getLastTimeStr (time, ago) {
+                return utils.getLastTimeStr(time, ago)
+            },
+            isUps (ups) {
+                return false
+            }
+        },
+        components: {
+            nvHead
+        }
     }
-  },
-  methods: {
-    getNewsList: function (id) {
-      let self = this
-      self.newsDetail = []
-      let body = ''
-      let param = {
-        news_id: id
-      }
-      comJs._post('/news/findNewsById', body, param).then((response) => {
-        comJs.setTitle(response.newsTitle)
-        self.newsDetail = response
-      }).catch((err) => {
-        console.log(err)
-      })
-    }
-  }
-}
 </script>
 <style lang="scss">
-@function px2rem($px, $base: 75) {
-    @return ($px / $base) * 1rem;
-}
-.news_detail{background: #ffffff;}
-/*title*/
-.nd_title{width:91%; margin: 0 auto;text-align:left;color: #000; font-size:px2rem(34);font-weight:500;padding:px2rem(48) 0 px2rem(20);position:relative;word-break: break-all;word-wrap: break-word;
-  &:after{
-        content: '';
-        position:absolute;
-        left:0;
-        bottom:0;
-        width:100%;
-        height:1px;
-        background-image: linear-gradient(0deg, #e8e8e8 50%, transparent 50%);
-    }
-}
-.news_details_tit_text{width: 100%;font-size:px2rem(24);color: #8E8E93;text-align: center;margin-top:px2rem(12);margin-bottom:px2rem(12); 
-  padding-left:6%; padding-right:6%;}
-/*图片*/
-.nd_pic{width:px2rem(670);margin: px2rem(30) auto; margin-top:px2rem(38); overflow:hidden;}
-.nd_pic img{width: 100%;}
-/*文本*/
-.nd_text{width: 91%;margin: 0 auto;font-size:px2rem(30);color: #333333;word-wrap: break-word; line-height:px2rem(48);
-    img{
-        display:block;
-        width:auto;
-        max-width:100%;
-        margin:px2rem(15) auto;
-        height:auto;
-    }
- }
-
-.content{padding-bottom:px2rem(30)}
-.fl{float:left;}
-.fr{float:right;}
-.clo{clear:both; overflow:hidden;}
-
-.nd_text p,.nd_text div{margin-bottom:px2rem(38)}
+@import './topic.scss';
 </style>

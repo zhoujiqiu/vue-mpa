@@ -1,12 +1,8 @@
 @charset "UTF-8";
 @import 'sass/base.scss';
+@import 'font/iconfont.scss';
+@import 'sass/markdown.css';
 
-.content {
-    @media (min-width: $screen-am) {
-        max-width: px2rem($screen-am-mw);
-        margin: 0 auto;
-    }
-}
 .clearfix {
     &:after {
         content: "";
