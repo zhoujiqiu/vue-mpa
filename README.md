@@ -3,24 +3,24 @@
   update: 2017-04-17 | author: zhoujiqiu
 
 ### 更新说明
-  1、vue-mpa升级为vue2版本，并设为了默认分支；
-  2、如果想继续用vue1版本，请切换到vue1-mpa分支；
-  3、更新demo实例，页面模仿了cnode中文社区；实现了列表页和详情页；
+  1、vue-mpa升级为vue2版本，并设为了默认分支；  
+  2、如果想继续用vue1版本，请切换到vue1-mpa分支；  
+  3、更新demo实例，页面模仿了cnode中文社区；实现了列表页和详情页；  
 
 ## 主要功能
-  1、多页面多入口，单页多页根据项目需求自由选择
-  2、全局统一的公共模块库`common.js`
-  3、支持字体图标,推荐`iconfont`
-  4、webpack提取自定义的公共模块
-  5、构建时，支持对css打包成文件；支持`less`、`sass`css预处理
-  6、单页路由js异步`require.ensure`加载；
-  7、发送ajax请求，采用`axios`库代替`vue-resource`，axios融合了promise，功能更强大
-  8、屏幕适配采用`flexible`
-  9、本地开发支持热更新
-  10、demo实例模拟cnode中文社区，分别从单页和多页实现了列表页、详情页的功能
-  11、demo实例实现了后退保留滚动条位置的功能
-  12、UI库采用自己开发的另外一个vue组件库项目[toon-ui](https://github.com/zhoujiqiu/toon-ui)
-  13、底部无限加载数据是基于`toon-ui`组件库的`InfiniteLoading`
+  1、多页面多入口，单页多页根据项目需求自由选择  
+  2、全局统一的公共模块库`common.js`  
+  3、支持字体图标,推荐`iconfont`  
+  4、webpack提取自定义的公共模块  
+  5、构建时，支持对css打包成文件；支持`less`、`sass`css预处理  
+  6、单页路由js异步`require.ensure`加载；  
+  7、发送ajax请求，采用`axios`库代替`vue-resource`，axios融合了promise，功能更强大  
+  8、屏幕适配采用`flexible`  
+  9、本地开发支持热更新  
+  10、demo实例模拟cnode中文社区，分别从单页和多页实现了列表页、详情页的功能  
+  11、demo实例实现了后退保留滚动条位置的功能  
+  12、UI库采用自己开发的另外一个vue组件库项目[toon-ui](https://github.com/zhoujiqiu/toon-ui)  
+  13、底部无限加载数据是基于`toon-ui`组件库的`InfiniteLoading`  
 
 ## 为什么要搭建vue多页（mpa）框架
   项目经常遇到的问题：单页应用spa打包文件太大的问题；
