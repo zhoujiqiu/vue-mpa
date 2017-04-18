@@ -5,7 +5,7 @@
       ref="head"
       :fix-head="true"
       :need-add="true"
-      :ref="single">
+      from="single">
     </nv-head>
 
     <section id="page">
