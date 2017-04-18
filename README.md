@@ -8,7 +8,8 @@
   3、更新demo实例，页面模仿了cnode中文社区；实现了列表页和详情页；  
 
 ### demo实例
-  [点击查看demo实例](https://github.com/zhoujiqiu/)
+  [点击查看单页应用实例](https://zhoujiqiu.github.io/vue-mpa/dist/single/home/index.html)  
+  [点击查看多页应用实例](https://zhoujiqiu.github.io/vue-mpa/dist/multi/list/index.html)  
 
 ## 主要功能
   0、单页多页应用可根据业务场景需求自由选择  

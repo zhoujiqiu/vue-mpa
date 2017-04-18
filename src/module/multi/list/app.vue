@@ -139,7 +139,7 @@ export default {
     },
     getTopicsList: function () {
       let _self = this
-      _self.$http.get('http://cnodejs.org/api/v1/topics', {
+      _self.$http.get('https://cnodejs.org/api/v1/topics', {
         params: _self.searchKey
       })
       .then(function (res) {
