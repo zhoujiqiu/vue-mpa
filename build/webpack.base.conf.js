@@ -1,13 +1,19 @@
 var path = require('path')
+var utils = require('./utils')
 var config = require('../config')
 var cssLoaders = require('./css-loaders')
 var projectRoot = path.resolve(__dirname, '../')
 var webpack = require('webpack')
-var glob = require('glob');
-var entries = getEntry('./src/module/**/**/*.js'); // 获得入口js文件
+var glob = require('glob')
+var entries = utils.getEntry('./src/module/**/**/*.js'); // 获得入口js文件
 
-// 配置（提取）项目公共的JS，并打包到指定的目录；
-entries['static/common/vendors'] = ['vue','axios','n-zepto','./src/assets/common.js'];
+// 手动配置全局公共资源，打包到vendors
+entries['static/common/vendors'] = [
+  'vue',
+  'axios',
+  'n-zepto',
+  './src/assets/common.js'
+];
 var chunks = Object.keys(entries);
 
 // 将样式提取到单独的css文件中，而不是打包到js文件或使用style标签插入在head标签中
@@ -17,9 +23,9 @@ module.exports = {
   entry: entries,
   output: {
     path: config.build.assetsRoot,
-    publicPath: config.build.assetsPublicPath,
+    publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath: config.dev.assetsPublicPath,
     filename: '[name].js',
-    chunkFilename: 'static/chunks/[name].js?[chunkhash]' // 将不是入口文件的vue router单独打包；
+    chunkFilename: 'static/chunks/[name].js?[chunkhash]' //require.ensure异步加载的路由js单独打包
   },
   resolve: {
     extensions: ['', '.js', '.vue'],
@@ -126,22 +132,4 @@ module.exports = {
     // 配置提取出的样式文件
     new ExtractTextPlugin('[name].css',{allChunks: true})
   ]
-}
-
-function getEntry(globPath) {
-  var entries = {},
-    basename, tmp, pathname;
-
-  glob.sync(globPath).forEach(function (entry) {
-    basename = path.basename(entry, path.extname(entry));
-    if(basename.indexOf('routers') !== -1 || entry.indexOf('vuex/') !== -1) return; //过滤vue routers.js
-    // 原路径：‘./src/module/news/list/index.js’
-    // 分解后：[news,list,index.js]
-    tmp = entry.split('/').splice(-3);
-    // * 输出js和html的路径
-    pathname =  tmp.slice(0, 2).join('/') + '/' + basename;
-    entries[pathname] = entry;
-  });
-  console.log(entries);
-  return entries;
 }

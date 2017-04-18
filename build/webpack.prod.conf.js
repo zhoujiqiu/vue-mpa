@@ -1,4 +1,5 @@
 var path = require('path')
+var utils = require('./utils')
 var config = require('../config')
 var webpack = require('webpack')
 var merge = require('webpack-merge')
@@ -40,24 +41,7 @@ module.exports = merge(baseWebpackConfig, {
   ]
 })
 
-function getEntry(globPath) {
-  var entries = {},
-    basename, tmp, pathname;
-
-  glob.sync(globPath).forEach(function (entry) {
-    basename = path.basename(entry, path.extname(entry));
-    if(basename.indexOf('routers') !== -1 || entry.indexOf('vuex/') !== -1) return; //过滤vue routers.js
-    // 原路径：‘./src/module/news/list/index.js’
-    // 分解后：tmp = [news,list,index.js]
-    tmp = entry.split('/').splice(-3);
-    // * 输出js和html的路径
-    pathname =  tmp.slice(0, 2).join('/') + '/' + basename;
-    entries[pathname] = entry;
-  });
-  return entries;
-}
-
-var pages = getEntry('./src/module/**/**/*.html');
+var pages = utils.getEntry('./src/module/**/**/*.html');
 for (var pathname in pages) {
   // 配置生成的html文件，定义路径等
   var conf = {
@@ -67,7 +51,7 @@ for (var pathname in pages) {
 
   };
   if (pathname in module.exports.entry) {
-    conf.chunks = ['static/common/vendors', pathname];
+    conf.chunks = ['static/common/vendors', pathname, 'manifest'];
     conf.hash = true;
   }
   module.exports.plugins.push(new HtmlWebpackPlugin(conf));
