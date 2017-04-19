@@ -1,11 +1,11 @@
 <template>
     <section id="sideBar" class="nav-list" :class="{'show':showMenu}">
         <section class="list-ul">
-            <a class="icon-quanbu iconfont item" @click="goTopic('all',ref)">全部</a>
-            <a class="icon-hao iconfont item" @click="goTopic('good',ref)">精华</a>
-            <a class="icon-fenxiang iconfont item" @click="goTopic('share',ref)">分享</a>
-            <a class="icon-wenda iconfont item" @click="goTopic('ask',ref)">问答</a>
-            <a class="icon-zhaopin iconfont item" @click="goTopic('job',ref)">招聘</a>
+            <a class="icon-quanbu iconfont item" @click="goTopic('all',from)">全部</a>
+            <a class="icon-hao iconfont item" @click="goTopic('good',from)">精华</a>
+            <a class="icon-fenxiang iconfont item" @click="goTopic('share',from)">分享</a>
+            <a class="icon-wenda iconfont item" @click="goTopic('ask',from)">问答</a>
+            <a class="icon-zhaopin iconfont item" @click="goTopic('job',from)">招聘</a>
         </section>
     </section>
 </template>
@@ -14,11 +14,11 @@
         replace: true,
         props: [
             'showMenu',
-            'ref'
+            'from'
         ],
         methods: {
-            goTopic: function (tab, ref) {
-                if (ref === 'single') {
+            goTopic: function (tab, from) {
+                if (from === 'single') {
                     this.$router.push({name: 'list', query: {tab: tab}})
                 } else {
                     window.location.href = 'list.html?tab=' + tab

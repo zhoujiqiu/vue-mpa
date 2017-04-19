@@ -19,7 +19,7 @@
         <nv-menu :show-menu="show"
             :page-type="pageType"
             :nick-name="nickname"
-            :ref="ref"
+            :from="from"
             v-if="fixHead" ></nv-menu>
     </div>
 </template>
@@ -38,7 +38,7 @@
                 type: Boolean,
                 default: true
             },
-            ref: String
+            from: String
         },
         data () {
             return {
