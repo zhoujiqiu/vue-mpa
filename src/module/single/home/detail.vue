@@ -3,7 +3,8 @@
         <nv-head page-type="主题"
                 :show-menu="showMenu"
                 :need-add="true"
-                :fix-head="true">
+                :fix-head="true"
+                from="single">
         </nv-head>
 
         <div id="page"

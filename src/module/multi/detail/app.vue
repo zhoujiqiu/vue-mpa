@@ -4,7 +4,7 @@
                 :show-menu="showMenu"
                 :need-add="true"
                 :fix-head="true"
-                :ref="multi">
+                from="multi">
         </nv-head>
 
         <div id="page"
