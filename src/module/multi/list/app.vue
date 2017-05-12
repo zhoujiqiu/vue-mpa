@@ -51,7 +51,7 @@ import 'assets/common.scss'
 import $ from 'n-zepto'
 import utils from 'assets/common.js'
 import nvHead from 'components/header'
-import InfiniteLoading from 'toon-ui/lib/components/scroller'
+import InfiniteLoading from 'toon-ui/lib/components/infiniteloading'
 export default {
   mounted: function () {
     this.searchKey.tab = utils.getQueryString('tab') || 'all'

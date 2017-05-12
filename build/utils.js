@@ -13,8 +13,8 @@ exports.getEntry = function(globPath){
     //过滤非入口文件的vuex和routers.js
     if(basename.indexOf('routers') !== -1 || entry.indexOf('vuex/') !== -1) return; 
 
-    // 原路径：‘./src/module/news/list/index.js’
-    // 分解后：[news,list,index.js]
+    // 原路径：‘./src/module/mulit/list/index.js’
+    // 分解后：[multi,list,index.js]
     tmp = entry.split('/').splice(-3); 
 
     // * 输出js和html的路径

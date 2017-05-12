@@ -14,7 +14,7 @@
     "axios": "^0.16.1",
     "babel-runtime": "^6.0.0",
     "timeago.js": "^3.0.1",
-    "toon-ui": "^1.2.2"
+    "toon-ui": "^1.2.3"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",
